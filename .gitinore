@@ -1,3 +1,9 @@
-target
+target/
+.idea/
+
+
 *.iml
-*.idea
+
+.idea/
+KRY.iml
+target/
