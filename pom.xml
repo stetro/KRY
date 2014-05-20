@@ -23,10 +23,6 @@
                 </executions>
                 <configuration>
                     <mainClass>de.stetro.mtin.kry.CryptApplication</mainClass>
-                    <arguments>
-                        <argument>foo</argument>
-                        <argument>bar</argument>
-                    </arguments>
                 </configuration>
             </plugin>
         </plugins>
