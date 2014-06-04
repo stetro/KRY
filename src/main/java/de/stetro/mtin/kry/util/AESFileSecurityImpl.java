@@ -50,7 +50,7 @@ public class AESFileSecurityImpl implements AESFileSecurity {
             fileOutputStream.write(salt);
         }
 
-        byte[] buffer = new byte[1];
+        byte[] buffer = new byte[1024];
         int len = cipherInputStream.read(buffer);
         while (len != -1) {
             fileOutputStream.write(buffer, 0, len);

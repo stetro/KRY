@@ -45,7 +45,7 @@ public class CryptDialog {
             }
         });
 
-        String[] strings = {"CBC", "CFB", "OFB", "CTR"};
+        String[] strings = {"CBC", "CFB16", "OFB16", "CTR"};
         comboBox1.setModel(new DefaultComboBoxModel(strings));
     }
 
