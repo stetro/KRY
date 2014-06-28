@@ -15,7 +15,7 @@
 #endif
 
 
-int main(void){
+int main(int argc, char **argv){
 	printf("RSA - Computation\n");
 	printf("=================\n\n");
 
@@ -43,23 +43,17 @@ int main(void){
 	gettimeofday(&start, NULL);
 
 	// Generate 2 random primes
-	printf("Generate two random primes q and p ...\n");
 	BIGNUM *p, *q, *e, *n;
 	p = BN_new();
 	q = BN_new();
 	BN_generate_prime_ex(p, NUMBITS, 0, NULL, NULL, NULL);
 	BN_generate_prime_ex(q, NUMBITS, 0, NULL, NULL, NULL);
 
-	printf("p = %s\n",BN_bn2dec(p));
-	printf("q = %s\n ****** \n",BN_bn2dec(q));
-
 	// Set e to 65537
-	printf("\nSet e to 65537 ...\n");
 	e = BN_new();
 	BN_dec2bn(&e, "65537");
 
 	// compute  n = pq
-	printf("\nCompute modulus n = pq ...\n");
 	BN_CTX *t;
 	t = BN_CTX_new();
 	BN_CTX_init(t);
@@ -70,10 +64,8 @@ int main(void){
 		printf("Error ! \n");
 		exit(1);
 	}
-	printf("n = %s\n ****** \n",BN_bn2dec(n));
 
 	// compute phi_n = (q-1)(p-1)
-	printf("\nCompute private exponent d ... \n");
 	BIGNUM *q_minus_1, *p_minus_1, *one, *d, *phi_n;
 	one = BN_new();
 	q_minus_1 = BN_new();
@@ -87,16 +79,24 @@ int main(void){
 
 	// compute d with inverse of e mod phi_n
 	BN_mod_inverse(d, e, phi_n, t);
-	printf("d = %s\n ****** \n",BN_bn2dec(d));
-
 
 	// compute ciphertexttime_t start = time(NULL);
 	BN_mod_exp(ciphertext, plaintext, e, n, t);
-	printf("\nPlaintext = %s\n",BN_bn2dec(plaintext));
-	printf("Ciphertext = %s\n ****** \n",BN_bn2dec(ciphertext));
 
 	gettimeofday(&stop, NULL);
 	printf("took %d microseconds\n", stop.tv_usec - start.tv_usec);
+
+	// documentation
+	printf("\nPlaintext = %s\n",BN_bn2dec(plaintext));
+	printf("Ciphertext = %s\n ****** \n",BN_bn2dec(ciphertext));
+	printf("Generate two random primes q and p ...\n");
+	printf("p = %s\n",BN_bn2dec(p));
+	printf("q = %s\n ****** \n",BN_bn2dec(q));
+	printf("\nSet e to 65537 ...\n");
+	printf("\nCompute modulus n = pq ...\n");
+	printf("n = %s\n ****** \n",BN_bn2dec(n));
+	printf("\nCompute private exponent d ... \n");
+	printf("d = %s\n ****** \n",BN_bn2dec(d));
 
 	printf("\n\nDECRYPTION: \n");
 	printf("=========== \n");
