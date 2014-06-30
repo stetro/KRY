@@ -23,6 +23,11 @@ int main(int argc, char **argv){
 	printf("RSA - Encrypt\n");
 	printf("=============\n\n");
 
+	if(argc < 3){
+		printf("call with <sourcefile> <destinationfile> ");
+		return EXIT_SUCCESS;
+	}
+
 	// get filename paths
 	char * filenamePlaintext = argv[1];
 	char * filenameCiphertext = argv[2];
@@ -51,6 +56,12 @@ int main(int argc, char **argv){
 	FILE *fileplain, *filecipher;
 	fileplain = fopen(filenamePlaintext, "r+");
 	filecipher = fopen(filenameCiphertext, "w+");
+	if(fileplain == NULL){
+		printf("File not found!");
+		return EXIT_SUCCESS;
+	}
+
+
 	unsigned char input_data[MAXLENGTH], cipher_data[MAXLENGTH];
 	int length = fread(input_data, 1, MAXLENGTH, fileplain);
 

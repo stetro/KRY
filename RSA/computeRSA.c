@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <string.h>
 #include <openssl/bn.h>
@@ -32,6 +31,7 @@ int main(int argc, char **argv){
 	// input plaintext as numper
 	char text_plaintext[MAXDIGITS];
 	BIGNUM *plaintext, *ciphertext;
+
 	ciphertext = BN_new();
 	plaintext = BN_new();
 	printf("Input Plaintext:");
@@ -48,7 +48,6 @@ int main(int argc, char **argv){
 	q = BN_new();
 	BN_generate_prime_ex(p, NUMBITS, 0, NULL, NULL, NULL);
 	BN_generate_prime_ex(q, NUMBITS, 0, NULL, NULL, NULL);
-
 	// Set e to 65537
 	e = BN_new();
 	BN_dec2bn(&e, "65537");
@@ -81,10 +80,10 @@ int main(int argc, char **argv){
 	BN_mod_inverse(d, e, phi_n, t);
 
 	// compute ciphertexttime_t start = time(NULL);
-	BN_mod_exp(ciphertext, plaintext, e, n, t);
+	int length=BN_mod_exp(ciphertext, plaintext, e, n, t);
 
 	gettimeofday(&stop, NULL);
-	printf("took %d microseconds\n", stop.tv_usec - start.tv_usec);
+	printf("took %d microseconds for normal exponentiation\n", stop.tv_usec - start.tv_usec);
 
 	// documentation
 	printf("\nPlaintext = %s\n",BN_bn2dec(plaintext));
@@ -120,6 +119,9 @@ int main(int argc, char **argv){
 	yq = BN_new();
 	mqxp = BN_new();
 	mpyq = BN_new();
+
+	gettimeofday(&start, NULL);
+
 	BN_mod(cp, ciphertext, p, t);
 	BN_mod(cq, ciphertext, q, t);
 	BN_mod(dp, d, p_minus_1, t);
@@ -136,8 +138,14 @@ int main(int argc, char **argv){
 	BN_mul(mpyq, mp, yq, t);
 	BN_mod_add(m, mqxp, mpyq, n, t);
 	gettimeofday(&stop, NULL);
-	printf("took %d microseconds\n", stop.tv_usec - start.tv_usec);
+	printf("took %d microseconds for CRT \n", stop.tv_usec - start.tv_usec);
 
+	gettimeofday(&start, NULL);
+
+	BN_mod_exp(plaintext, ciphertext, d, n, t);
+	gettimeofday(&stop, NULL);
+
+	printf("took %d microseconds for normal exponentiation\n", stop.tv_usec - start.tv_usec);
 
 	printf("\nPlaintext = %s\n",BN_bn2dec(m));
 

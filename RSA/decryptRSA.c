@@ -1,4 +1,4 @@
-#include <stdlib.h>
+
 #include <string.h>
 #include <openssl/bn.h>
 #include <openssl/err.h>
@@ -21,6 +21,11 @@
 int main(int argc, char **argv){
 	printf("RSA - Decrypt\n");
 	printf("=============\n\n");
+
+	if(argc < 3){
+		printf("call with <sourcefile> <destinationfile> ");
+		return EXIT_SUCCESS;
+	}
 
 	// get filename paths
 	char * filenamePlaintext = argv[2];
@@ -54,6 +59,11 @@ int main(int argc, char **argv){
 	FILE *fileplain, *filecipher;
 	filecipher = fopen(filenameCiphertext, "r+");
 	fileplain = fopen(filenamePlaintext, "w+");
+	if(filecipher == NULL){
+		printf("File not found!");
+		return EXIT_SUCCESS;
+	}
+
 	unsigned char plain_data[MAXLENGTH], cipher_data[256];
 	int length = fread(cipher_data, 1, 256, filecipher);
 
