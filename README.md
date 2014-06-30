@@ -1,5 +1,7 @@
-#Kryptographie Praktikum
+#Kryptographie Praktikum 2014
+### Cologne University of Applied Sciences
 
-AES Java Implementation
+AES - Java Implementation
 
-C RSA Implementation
+RSA - C Implementation
+
