@@ -27,10 +27,10 @@ int main(int argc, char **argv){
 	char * filenameCiphertext = argv[1];
 
 	//Initialize RSA-Key and ask for d
-	BIGNUM *e, *d, *n;
-	e = BN_new();
+	BIGNUM *d, *n, *e;
 	d = BN_new();
 	n = BN_new();
+	e = BN_new();
 
 	char text_d[MAXDIGITS];
 	char text_n[MAXDIGITS];
@@ -46,19 +46,20 @@ int main(int argc, char **argv){
 	BN_dec2bn(&e, "65537");
 
 	RSA * myrsakey = RSA_new();
+	myrsakey->n = n;
 	myrsakey->d = d;
 	myrsakey->e = e;
-	myrsakey->n = n;
-
 
 	// read file
 	FILE *fileplain, *filecipher;
 	filecipher = fopen(filenameCiphertext, "r+");
 	fileplain = fopen(filenamePlaintext, "w+");
-	unsigned char plain_data[MAXLENGTH], cipher_data[MAXLENGTH];
-	fread(cipher_data, 1, MAXLENGTH, filecipher);
+	unsigned char plain_data[MAXLENGTH], cipher_data[256];
+	int length = fread(cipher_data, 1, 256, filecipher);
 
-	int enc_size = RSA_private_decrypt(MAXLENGTH,cipher_data, plain_data, myrsakey, RSA_PKCS1_OAEP_PADDING);
+	printf("\ndecrypting %d bytes\n",length);
+
+	int enc_size = RSA_private_decrypt(length, cipher_data, plain_data, myrsakey, RSA_PKCS1_OAEP_PADDING);
 
 	if(enc_size == -1){
 		printf("\nError ! \n");

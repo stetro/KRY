@@ -51,12 +51,12 @@ int main(int argc, char **argv){
 	FILE *fileplain, *filecipher;
 	fileplain = fopen(filenamePlaintext, "r+");
 	filecipher = fopen(filenameCiphertext, "w+");
-	char input_data[MAXLENGTH], cipher_data[MAXLENGTH];
-	fread(input_data, 1, MAXLENGTH, fileplain);
+	unsigned char input_data[MAXLENGTH], cipher_data[MAXLENGTH];
+	int length = fread(input_data, 1, MAXLENGTH, fileplain);
 
-	printf("%s", input_data);
+	printf("\nencypting %d bytes\n",length);
 
-	int enc_size = RSA_public_encrypt(strlen((const char *) input_data), (const unsigned char*) input_data, (unsigned char *) cipher_data, myrsakey, RSA_PKCS1_OAEP_PADDING);
+	int enc_size = RSA_public_encrypt(length, input_data, cipher_data, myrsakey, RSA_PKCS1_OAEP_PADDING);
 
 	if(enc_size == -1){
 		printf("\nError ! \n");
@@ -65,6 +65,7 @@ int main(int argc, char **argv){
 	}
 
 	int outlength = fwrite(cipher_data,1,enc_size,filecipher);
+	printf("\n write %d bytes to %s \n", outlength ,filenameCiphertext);
 	fclose(fileplain);
 	fclose(filecipher);
 
